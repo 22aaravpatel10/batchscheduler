@@ -1,0 +1,88 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// Equipment model - Represents manufacturing equipment
+model Equipment {
+  id          String   @id @default(cuid())
+  name        String
+  description String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  batches     Batch[]
+}
+
+// Batch model - Represents scheduled batch operations
+model Batch {
+  id          String      @id @default(cuid())
+  name        String
+  equipmentId String
+  equipment   Equipment   @relation(fields: [equipmentId], references: [id], onDelete: Cascade)
+  startTime   DateTime
+  endTime     DateTime
+  status      BatchStatus @default(PLANNED)
+  notes       String?
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+  materials   BatchMaterial[]
+
+  @@index([equipmentId])
+  @@index([startTime])
+  @@index([status])
+}
+
+// Batch status enum
+enum BatchStatus {
+  PLANNED
+  IN_PROGRESS
+  COMPLETED
+  DELAYED
+  ON_HOLD
+  CANCELLED
+}
+
+// Material model - Raw materials and chemicals
+model Material {
+  id              String   @id @default(cuid())
+  name            String   @unique
+  description     String?
+  unit            String   // e.g., "kg", "L", "units"
+  currentQuantity Float
+  minimumQuantity Float    @default(0)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  batches         BatchMaterial[]
+}
+
+// BatchMaterial - Junction table for batch-material relationships
+model BatchMaterial {
+  id         String   @id @default(cuid())
+  batchId    String
+  batch      Batch    @relation(fields: [batchId], references: [id], onDelete: Cascade)
+  materialId String
+  material   Material @relation(fields: [materialId], references: [id], onDelete: Cascade)
+  quantity   Float    // Quantity consumed by this batch
+  createdAt  DateTime @default(now())
+
+  @@unique([batchId, materialId])
+  @@index([batchId])
+  @@index([materialId])
+}
+
+// User model for authentication tracking
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  name      String?
+  firebaseUid String @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
