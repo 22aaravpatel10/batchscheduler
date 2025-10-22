@@ -5,18 +5,29 @@ A simple, user-friendly platform for batch scheduling, equipment tracking, and a
 ## Features
 
 ### Core Features
-- **Equipment Scheduler**: Google Calendar-style interface to create, view, and manage batch schedules
+- **Equipment Scheduler**: Google Calendar-style interface with Timeline and Calendar views to create, view, edit, and manage batch schedules
+- **Batch Management**: Create, edit, and delete batches with full material assignment and equipment tracking
 - **Batch Status Tracking**: Track batches with status (Planned, In Progress, Completed, Delayed, On Hold, Cancelled)
-- **Inventory Management**: Automatic inventory updates when batches are scheduled
+- **Inventory Management**: Automatic inventory updates when batches are scheduled with low stock alerts
 - **Dashboard View**: Overview of upcoming batches, late batches, and low inventory alerts
 - **Data Persistence**: PostgreSQL database for reliable data storage
+- **Enhanced UI/UX**: Centered modal forms with split-view sidebars, persistent notifications, and improved navigation
+
+### Advanced Features
+- **GxP Compliance**: FDA 21 CFR Part 11 compliance with audit trails and electronic signatures
+- **Material Safety**: OSHA HazCom & GHS compliance with SDS management, hazard classifications, and PPE requirements
+- **DCS Integration**: Connect with Distributed Control Systems via webhooks for real-time equipment data
+- **Audit Trail**: Complete change tracking for batches, materials, and equipment
+- **Quality Control**: Material QC status tracking and approval workflows
 
 ### Technology Stack
-- **Frontend**: Next.js 14 (React) with TypeScript
-- **Styling**: Tailwind CSS
+- **Frontend**: Next.js 15.5.6 (React) with TypeScript and Turbopack
+- **Styling**: Tailwind CSS v4
 - **Database**: PostgreSQL with Prisma ORM
 - **Authentication**: Firebase Authentication (ready for implementation)
-- **Calendar**: react-big-calendar for scheduler interface
+- **Calendar**: react-big-calendar with multiple view modes (Month/Week/Day/Agenda)
+- **Icons**: Lucide React
+- **Notifications**: React Hot Toast with persistent notifications
 
 ## Getting Started
 
@@ -106,18 +117,36 @@ A simple, user-friendly platform for batch scheduling, equipment tracking, and a
 
 Materials below minimum quantity will show up in the dashboard as low inventory alerts.
 
-### 3. Viewing the Scheduler
+### 3. Scheduling and Managing Batches
 
 1. Navigate to the **Scheduler** page
-2. View all batches in calendar format
-3. Click on any batch to see details
-4. Batches are color-coded by status:
-   - **Blue**: Planned
-   - **Yellow**: In Progress
-   - **Green**: Completed
-   - **Red**: Delayed
-   - **Gray**: On Hold
-   - **Slate**: Cancelled
+2. Choose your preferred view:
+   - **Timeline View**: Horizontal timeline showing equipment utilization across time
+   - **Calendar View**: Traditional calendar with multiple modes:
+     - Month view
+     - Week view
+     - Day view
+     - Agenda view
+3. **Creating a batch**:
+   - Click **Create Batch** button
+   - Fill in all required fields (batch name, equipment, start/end times)
+   - Optionally add materials and quantities
+   - Click **Create Batch**
+4. **Viewing batch details**:
+   - Click on any batch in the scheduler
+   - View comprehensive information including equipment, materials, status, and notes
+5. **Editing a batch**:
+   - Click on a batch to open details
+   - Click **Edit Batch** button
+   - Modify any information
+   - Click **Update Batch** to save changes
+6. Batches are color-coded by status:
+   - **Teal**: Planned
+   - **Amber**: In Progress
+   - **Emerald**: Completed
+   - **Rose**: Delayed
+   - **Slate**: On Hold
+   - **Gray**: Cancelled
 
 ### 4. Dashboard Overview
 
@@ -222,25 +251,69 @@ npm start
 - `AWS_REGION`
 - `AWS_S3_BUCKET`
 
-## MVP Limitations & Future Enhancements
+## Current Features (Implemented)
 
-### Current MVP Limitations
-1. **Batch Creation**: Currently view-only in scheduler. Batches can be created via API or future admin interface
-2. **Authentication**: Firebase configured but login flow not yet implemented
-3. **Drag & Drop**: Calendar is view-only; drag-and-drop batch creation planned for future
-4. **Real-time Updates**: Manual refresh required to see changes
-5. **User Roles**: Single-user mode; multi-user with permissions planned
+✅ **Batch Scheduling**
+- Create, edit, and delete batches with full functionality
+- Calendar and Timeline views
+- Multiple calendar modes (Month/Week/Day/Agenda)
+- Color-coded status tracking
+- Material assignment with automatic inventory updates
+- Batch editing from detail modal
 
-### Planned Enhancements
+✅ **Equipment Management**
+- Full CRUD operations for equipment
+- Detailed equipment specifications (ID, size, manufacturer, material of construction)
+- Equipment utilization in timeline view
+- Centered modal forms with split-view sidebar showing all added equipment
+
+✅ **Inventory Management**
+- Material CRUD operations
+- Automatic inventory updates when batches are created/edited/deleted
+- Low stock alerts and warnings
+- Centered modal forms with split-view sidebar showing all added materials
+
+✅ **Dashboard**
+- Real-time statistics (equipment count, batches in progress, late batches)
+- Low inventory warnings
+- Upcoming batches view (next 7 days)
+
+✅ **GxP Compliance Framework**
+- Audit trail system for change tracking
+- FDA 21 CFR Part 211 material tracking fields
+- OSHA HazCom & GHS compliance fields
+- GxP Configuration page (accessible via Settings dropdown)
+
+✅ **DCS Integration**
+- Integration management interface
+- Webhook configuration
+- Connection testing capabilities
+
+✅ **Enhanced UI/UX**
+- Persistent notifications with dismiss buttons (duration: Infinity)
+- Split-view modal design with equipment/material sidebars
+- Settings dropdown navigation in top-right corner
+- Improved form layouts with proper scrolling support
+- Custom notification icons for different actions
+
+## Planned Enhancements
+
+### Near-term
+- User authentication with Firebase
+- Role-based access control
 - Drag-and-drop batch scheduling in calendar
-- Real-time notifications for late batches
-- Batch creation form with material assignment
-- User authentication and authorization
-- Export reports (PDF, CSV)
+- Real-time notifications via WebSockets
 - Batch templates for common operations
-- Email notifications for low inventory
-- Mobile-responsive improvements
-- Batch history and analytics
+
+### Long-term
+- Export reports (PDF, CSV)
+- Email notifications for low inventory and late batches
+- Advanced mobile-responsive improvements
+- Batch history and analytics dashboard
+- SDS document upload and management
+- Electronic signature workflow for GxP compliance
+- Batch genealogy tracking
+- Process validation documentation generation
 
 ## Troubleshooting
 
