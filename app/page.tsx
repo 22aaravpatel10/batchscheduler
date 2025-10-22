@@ -55,54 +55,54 @@ export default function Dashboard() {
 
       {/* Statistics Cards */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-        <div className="bg-white rounded-lg shadow p-6">
+        <div className="bg-white rounded-lg border border-slate-200 p-6 hover:border-teal-200 transition-all">
           <div className="flex items-center">
             <div className="flex-shrink-0">
-              <Calendar className="h-8 w-8 text-blue-600" />
+              <Calendar className="h-8 w-8 text-teal-600" />
             </div>
             <div className="ml-4">
-              <p className="text-sm font-medium text-gray-500">Total Equipment</p>
-              <p className="text-2xl font-semibold text-gray-900">{data?.totalEquipment || 0}</p>
+              <p className="text-sm font-medium text-slate-600">Total Equipment</p>
+              <p className="text-2xl font-semibold text-black">{data?.totalEquipment || 0}</p>
             </div>
           </div>
         </div>
 
-        <div className="bg-white rounded-lg shadow p-6">
+        <div className="bg-white rounded-lg border border-slate-200 p-6 hover:border-teal-200 transition-all">
           <div className="flex items-center">
             <div className="flex-shrink-0">
-              <Clock className="h-8 w-8 text-yellow-600" />
+              <Clock className="h-8 w-8 text-amber-600" />
             </div>
             <div className="ml-4">
-              <p className="text-sm font-medium text-gray-500">In Progress</p>
-              <p className="text-2xl font-semibold text-gray-900">
+              <p className="text-sm font-medium text-slate-600">In Progress</p>
+              <p className="text-2xl font-semibold text-black">
                 {data?.inProgressBatches.length || 0}
               </p>
             </div>
           </div>
         </div>
 
-        <div className="bg-white rounded-lg shadow p-6">
+        <div className="bg-white rounded-lg border border-slate-200 p-6 hover:border-teal-200 transition-all">
           <div className="flex items-center">
             <div className="flex-shrink-0">
               <AlertTriangle className="h-8 w-8 text-red-600" />
             </div>
             <div className="ml-4">
-              <p className="text-sm font-medium text-gray-500">Late Batches</p>
-              <p className="text-2xl font-semibold text-gray-900">
+              <p className="text-sm font-medium text-slate-600">Late Batches</p>
+              <p className="text-2xl font-semibold text-black">
                 {data?.lateBatches.length || 0}
               </p>
             </div>
           </div>
         </div>
 
-        <div className="bg-white rounded-lg shadow p-6">
+        <div className="bg-white rounded-lg border border-slate-200 p-6 hover:border-teal-200 transition-all">
           <div className="flex items-center">
             <div className="flex-shrink-0">
-              <CheckCircle2 className="h-8 w-8 text-green-600" />
+              <CheckCircle2 className="h-8 w-8 text-emerald-600" />
             </div>
             <div className="ml-4">
-              <p className="text-sm font-medium text-gray-500">Total Materials</p>
-              <p className="text-2xl font-semibold text-gray-900">
+              <p className="text-sm font-medium text-slate-600">Total Materials</p>
+              <p className="text-2xl font-semibold text-black">
                 {data?.totalMaterials || 0}
               </p>
             </div>
@@ -112,23 +112,23 @@ export default function Dashboard() {
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         {/* Upcoming Batches */}
-        <div className="bg-white rounded-lg shadow">
-          <div className="px-6 py-4 border-b border-gray-200">
-            <h2 className="text-lg font-semibold text-gray-900">Upcoming Batches</h2>
-            <p className="text-sm text-gray-500">Next 7 days</p>
+        <div className="bg-white rounded-lg border border-slate-200">
+          <div className="px-6 py-4 border-b border-slate-100">
+            <h2 className="text-lg font-semibold text-black">Upcoming Batches</h2>
+            <p className="text-sm text-slate-600">Next 7 days</p>
           </div>
           <div className="p-6">
             {data?.upcomingBatches && data.upcomingBatches.length > 0 ? (
               <div className="space-y-4">
                 {data.upcomingBatches.map((batch) => (
-                  <div key={batch.id} className="border-l-4 border-blue-500 pl-4 py-2">
+                  <div key={batch.id} className="border-l-4 border-teal-500 pl-4 py-2">
                     <div className="flex justify-between items-start">
                       <div>
-                        <h3 className="font-medium text-gray-900">{batch.name}</h3>
-                        <p className="text-sm text-gray-500">
+                        <h3 className="font-medium text-black">{batch.name}</h3>
+                        <p className="text-sm text-slate-600">
                           {batch.equipment?.name}
                         </p>
-                        <p className="text-xs text-gray-400 mt-1">
+                        <p className="text-xs text-slate-500 mt-1">
                           {new Date(batch.startTime).toLocaleString()}
                         </p>
                       </div>
@@ -138,16 +138,16 @@ export default function Dashboard() {
                 ))}
               </div>
             ) : (
-              <p className="text-gray-500 text-center py-8">No upcoming batches</p>
+              <p className="text-slate-500 text-center py-8">No upcoming batches</p>
             )}
           </div>
         </div>
 
         {/* Late Batches */}
-        <div className="bg-white rounded-lg shadow">
-          <div className="px-6 py-4 border-b border-gray-200">
-            <h2 className="text-lg font-semibold text-gray-900">Late Batches</h2>
-            <p className="text-sm text-gray-500">Requires attention</p>
+        <div className="bg-white rounded-lg border border-slate-200">
+          <div className="px-6 py-4 border-b border-slate-100">
+            <h2 className="text-lg font-semibold text-black">Late Batches</h2>
+            <p className="text-sm text-slate-600">Requires attention</p>
           </div>
           <div className="p-6">
             {data?.lateBatches && data.lateBatches.length > 0 ? (
@@ -156,8 +156,8 @@ export default function Dashboard() {
                   <div key={batch.id} className="border-l-4 border-red-500 pl-4 py-2">
                     <div className="flex justify-between items-start">
                       <div>
-                        <h3 className="font-medium text-gray-900">{batch.name}</h3>
-                        <p className="text-sm text-gray-500">
+                        <h3 className="font-medium text-black">{batch.name}</h3>
+                        <p className="text-sm text-slate-600">
                           {batch.equipment?.name}
                         </p>
                         <p className="text-xs text-red-600 mt-1">
@@ -170,32 +170,32 @@ export default function Dashboard() {
                 ))}
               </div>
             ) : (
-              <p className="text-gray-500 text-center py-8">No late batches</p>
+              <p className="text-slate-500 text-center py-8">No late batches</p>
             )}
           </div>
         </div>
 
         {/* Low Inventory */}
-        <div className="bg-white rounded-lg shadow lg:col-span-2">
-          <div className="px-6 py-4 border-b border-gray-200">
-            <h2 className="text-lg font-semibold text-gray-900">Low Inventory Alert</h2>
-            <p className="text-sm text-gray-500">Materials below minimum quantity</p>
+        <div className="bg-white rounded-lg border border-slate-200 lg:col-span-2">
+          <div className="px-6 py-4 border-b border-slate-100">
+            <h2 className="text-lg font-semibold text-black">Low Inventory Alert</h2>
+            <p className="text-sm text-slate-600">Materials below minimum quantity</p>
           </div>
           <div className="p-6">
             {data?.lowInventoryMaterials && data.lowInventoryMaterials.length > 0 ? (
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {data.lowInventoryMaterials.map((material) => (
-                  <div key={material.id} className="border border-orange-200 rounded-lg p-4 bg-orange-50">
+                  <div key={material.id} className="border border-orange-200 rounded-lg p-4 bg-orange-50/50">
                     <div className="flex justify-between items-start">
                       <div>
-                        <h3 className="font-medium text-gray-900">{material.name}</h3>
-                        <p className="text-sm text-gray-500">{material.description}</p>
+                        <h3 className="font-medium text-black">{material.name}</h3>
+                        <p className="text-sm text-slate-600">{material.description}</p>
                       </div>
                       <div className="text-right">
                         <p className="text-sm font-semibold text-orange-600">
                           {material.currentQuantity} {material.unit}
                         </p>
-                        <p className="text-xs text-gray-500">
+                        <p className="text-xs text-slate-500">
                           Min: {material.minimumQuantity} {material.unit}
                         </p>
                       </div>
@@ -204,7 +204,7 @@ export default function Dashboard() {
                 ))}
               </div>
             ) : (
-              <p className="text-gray-500 text-center py-8">All materials are well stocked</p>
+              <p className="text-slate-500 text-center py-8">All materials are well stocked</p>
             )}
           </div>
         </div>
@@ -214,14 +214,14 @@ export default function Dashboard() {
       <div className="mt-8 flex gap-4">
         <Link
           href="/scheduler"
-          className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700"
+          className="inline-flex items-center px-4 py-2 rounded-lg text-sm font-medium text-white bg-teal-500 hover:bg-teal-600 transition-colors"
         >
           <Calendar className="w-4 h-4 mr-2" />
           Go to Scheduler
         </Link>
         <Link
           href="/inventory"
-          className="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50"
+          className="inline-flex items-center px-4 py-2 border border-slate-200 rounded-lg text-sm font-medium text-slate-700 bg-white hover:bg-slate-50 transition-colors"
         >
           View Inventory
         </Link>

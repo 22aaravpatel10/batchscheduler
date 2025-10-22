@@ -12,27 +12,33 @@ datasource db {
 
 // Equipment model - Represents manufacturing equipment
 model Equipment {
-  id          String   @id @default(cuid())
-  name        String
-  description String?
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-  batches     Batch[]
+  id                      String   @id @default(cuid())
+  name                    String
+  equipmentId             String?  // Custom equipment ID (e.g., "R-101")
+  size                    String?  // e.g., "8000L", "5000 gal"
+  manufacturer            String?
+  materialOfConstruction  String?  // e.g., "Glass-lined", "Stainless Steel 316L"
+  description             String?
+  createdAt               DateTime @default(now())
+  updatedAt               DateTime @updatedAt
+  batches                 Batch[]
 }
 
 // Batch model - Represents scheduled batch operations
 model Batch {
-  id          String      @id @default(cuid())
-  name        String
-  equipmentId String
-  equipment   Equipment   @relation(fields: [equipmentId], references: [id], onDelete: Cascade)
-  startTime   DateTime
-  endTime     DateTime
-  status      BatchStatus @default(PLANNED)
-  notes       String?
-  createdAt   DateTime    @default(now())
-  updatedAt   DateTime    @updatedAt
-  materials   BatchMaterial[]
+  id              String      @id @default(cuid())
+  name            String
+  reactionStepId  String?     // e.g., "STEP-001", "Neutralization-A"
+  reactionStepName String?    // e.g., "Hydrogenation", "Crystallization"
+  equipmentId     String
+  equipment       Equipment   @relation(fields: [equipmentId], references: [id], onDelete: Cascade)
+  startTime       DateTime
+  endTime         DateTime
+  status          BatchStatus @default(PLANNED)
+  notes           String?
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
+  materials       BatchMaterial[]
 
   @@index([equipmentId])
   @@index([startTime])
@@ -49,7 +55,7 @@ enum BatchStatus {
   CANCELLED
 }
 
-// Material model - Raw materials and chemicals
+// Material model - Raw materials and chemicals with FDA/OSHA compliance
 model Material {
   id              String   @id @default(cuid())
   name            String   @unique
@@ -57,9 +63,45 @@ model Material {
   unit            String   // e.g., "kg", "L", "units"
   currentQuantity Float
   minimumQuantity Float    @default(0)
+
+  // FDA 21 CFR Part 211 Requirements
+  casNumber       String?  // CAS Registry Number
+  lotNumber       String?  // Current lot/batch number
+  supplierName    String?  // Supplier/Manufacturer name
+  supplierLotNumber String? // Supplier's lot number
+  receivedDate    DateTime? // Date of receipt
+  expirationDate  DateTime? // Expiration/retest date
+  storageLocation String?  // Physical storage location
+  storageConditions String? // e.g., "Store at 2-8°C", "Keep dry"
+
+  // OSHA HazCom & GHS Requirements
+  ghsClassification String? // GHS hazard classification
+  hazardCategory  String?  // e.g., "Flammable Liquid Category 2"
+  signalWord      String?  // "Danger", "Warning", or null
+  hazardStatements String? // H-codes (e.g., "H225, H319")
+  precautionaryStatements String? // P-codes (e.g., "P210, P280")
+  pictograms      String?  // GHS pictogram codes (e.g., "GHS02,GHS07")
+  sdsFileName     String?  // Safety Data Sheet filename/reference
+  sdsLastUpdated  DateTime? // SDS revision date
+
+  // Additional Safety Information
+  isHazardous     Boolean  @default(false)
+  requiresPPE     String?  // Required PPE (e.g., "Gloves, goggles, lab coat")
+  firstAidMeasures String? // Brief first aid info
+  disposalProcedure String? // Waste disposal requirements
+
+  // Quality Control
+  qcStatus        String?  @default("PENDING") // PENDING, APPROVED, REJECTED, QUARANTINE
+  qcApprovedBy    String?  // QC personnel name/ID
+  qcApprovedDate  DateTime? // QC approval date
+
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
   batches         BatchMaterial[]
+
+  @@index([casNumber])
+  @@index([qcStatus])
+  @@index([expirationDate])
 }
 
 // BatchMaterial - Junction table for batch-material relationships
@@ -85,4 +127,291 @@ model User {
   firebaseUid String @unique
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+
+// DCS Integration Configuration
+model DCSIntegration {
+  id              String   @id @default(cuid())
+  name            String   // e.g., "CENTUM VP - Building A"
+  vendor          String   // YOKOGAWA, SIEMENS, HONEYWELL, ABB, etc.
+  systemType      String   // e.g., "CENTUM VP", "PCS 7", "Experion PKS"
+
+  // Connection Method
+  connectionType  String   // OPC_UA, OPC_DA, REST_API, DATABASE, PROPRIETARY
+
+  // OPC Configuration
+  opcServerUrl    String?  // e.g., "opc.tcp://dcs-server:4840"
+  opcNamespace    String?  // Namespace index or URI
+  opcUsername     String?  // If authentication required
+  opcPassword     String?  // Encrypted password
+
+  // REST API Configuration
+  apiBaseUrl      String?  // e.g., "https://dcs-api.company.com/api/v1"
+  apiKey          String?  // API authentication key
+  apiAuthType     String?  // BASIC, BEARER, API_KEY, OAUTH2
+
+  // Database Configuration
+  dbConnectionString String? // For direct DB access
+  dbType          String?  // MSSQL, ORACLE, POSTGRESQL
+
+  // Security & Network
+  certificatePath String?  // SSL/TLS certificate path
+  trustServerCert Boolean  @default(false)
+  networkZone     String?  // DMZ, PRODUCTION, DEVELOPMENT
+
+  // Sync Configuration
+  syncEnabled     Boolean  @default(false)
+  syncInterval    Int      @default(60) // seconds
+  lastSyncTime    DateTime?
+  syncStatus      String   @default("IDLE") // IDLE, SYNCING, ERROR, SUCCESS
+
+  // Data Mapping
+  tags            DCSTag[]
+
+  isActive        Boolean  @default(true)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@index([vendor])
+  @@index([syncEnabled])
+}
+
+// DCS Tag Mapping - Links DCS tags to application data
+model DCSTag {
+  id              String   @id @default(cuid())
+  integrationId   String
+  integration     DCSIntegration @relation(fields: [integrationId], references: [id], onDelete: Cascade)
+
+  // Tag Identification
+  tagName         String   // DCS tag name (e.g., "FIC-101.PV")
+  tagPath         String?  // Full hierarchical path if needed
+  description     String?
+
+  // Data Type & Unit
+  dataType        String   // FLOAT, INT, BOOL, STRING
+  unit            String?  // Engineering unit
+
+  // Mapping to Application
+  mappingType     String   // EQUIPMENT, BATCH, MATERIAL, CUSTOM
+  equipmentId     String?  // If mapped to equipment
+  materialId      String?  // If mapped to material
+  batchId         String?  // If mapped to batch
+  customField     String?  // Custom field name
+
+  // Value Info
+  currentValue    String?  // Last read value (as string)
+  lastReadTime    DateTime?
+  quality         String?  // GOOD, BAD, UNCERTAIN
+
+  // Alarming (optional)
+  alarmEnabled    Boolean  @default(false)
+  highAlarmLimit  Float?
+  lowAlarmLimit   Float?
+
+  isActive        Boolean  @default(true)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@index([integrationId])
+  @@index([tagName])
+  @@index([mappingType])
+  @@unique([integrationId, tagName])
+}
+
+// DCS Sync History - Audit trail
+model DCSSyncHistory {
+  id              String   @id @default(cuid())
+  integrationId   String
+  syncStartTime   DateTime
+  syncEndTime     DateTime?
+  status          String   // SUCCESS, PARTIAL, FAILED
+  tagsRead        Int      @default(0)
+  tagsFailed      Int      @default(0)
+  errorMessage    String?
+  createdAt       DateTime @default(now())
+
+  @@index([integrationId])
+  @@index([syncStartTime])
+}
+
+// ============ GxP COMPLIANCE MODELS ============
+
+// Organization GxP Configuration
+model Organization {
+  id          String   @id @default(cuid())
+  name        String   @default("Default Organization")
+  gxpMode     String   @default("OFF") // OFF, LITE, FULL
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+// GxP Configuration Settings
+model GxPConfig {
+  id          String   @id @default(cuid())
+  orgId       String   @default("default")
+
+  // Mode & Scope
+  gxpMode     String   @default("OFF") // OFF, LITE, FULL
+  applyToSites String[]   // Site IDs
+  applyToProducts String[] // Product IDs
+
+  // Audit & Data Integrity
+  immutableAudit Boolean @default(false)
+  requireReasonOnEdit String @default("OFF") // OFF, INVENTORY_ONLY, ALL_GXP
+  lateEntryMinutes Int @default(5)
+  hashChainEnabled Boolean @default(false)
+  logPrintExport Boolean @default(false)
+
+  // Time & Clock Drift
+  maxClockDrift Int @default(0) // 0=OFF, 300=5min, 120=2min
+  clockDriftAction String @default("NONE") // NONE, WARN, BLOCK
+  ntpEndpoint String?
+  ntpLastSync DateTime?
+
+  // Master Data Governance
+  versioningEnabled Boolean @default(false)
+  approvedOnlyEnforcement String @default("OFF") // OFF, WARN, BLOCK
+  effectiveDatingAllowed Boolean @default(true)
+  changeReasonRequired Boolean @default(false)
+
+  // Inventory & Quality
+  coaRequirement String @default("OFF") // OFF, WARN, BLOCK
+  statusTransitionMatrix Json? // Allowed status transitions
+
+  // Equipment
+  calibrationOverdueAction String @default("OFF") // OFF, WARN, BLOCK
+  cleaningMatrixEnabled Boolean @default(false)
+  incompatibleSequenceAction String @default("OFF") // OFF, WARN, BLOCK
+
+  // Records & Retention
+  auditRetentionYears Int @default(5)
+  batchRetentionYears Int @default(5)
+  masterRetentionYears Int @default(5)
+  exportSchedule String @default("WEEKLY") // DAILY, WEEKLY, MONTHLY
+  storageClass String @default("STANDARD") // STANDARD, WORM
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@unique([orgId])
+}
+
+// Immutable Audit Log
+model AuditLog {
+  id          BigInt   @id @default(autoincrement())
+  tsServer    DateTime @default(now())
+  tsClient    DateTime?
+  orgId       String   @default("default")
+  userId      String?
+
+  entityType  String   // 'material','inventory_txn','batch','equipment','master_data'
+  entityId    String
+  action      String   // 'create','update','delete','status_change','adjust'
+
+  beforeJson  Json?
+  afterJson   Json?
+
+  reasonCode  String?
+  reasonText  String?
+
+  sourceIp    String?
+  userAgent   String?
+  sessionId   String?
+
+  hash        String?  // SHA256 hash
+  hashPrev    String?  // Previous hash for chain
+
+  @@index([tsServer])
+  @@index([orgId])
+  @@index([entityType])
+  @@index([entityId])
+  @@index([userId])
+}
+
+// Reason Codes
+model ReasonCode {
+  id          String   @id @default(cuid())
+  orgId       String   @default("default")
+  code        String   // e.g., "INV_ADJ_COUNT", "QUALITY_FAIL"
+  description String
+  category    String?  // INVENTORY, QUALITY, MAINTENANCE, OTHER
+  active      Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@unique([orgId, code])
+  @@index([orgId])
+  @@index([active])
+}
+
+// Versioned Master Data (Materials)
+model MaterialMaster {
+  id          String   @id @default(cuid())
+  orgId       String   @default("default")
+  materialId  String   // References Material.id or base identifier
+  name        String
+  spec        Json?    // Material specifications
+  version     Int      @default(1)
+  status      String   @default("DRAFT") // DRAFT, APPROVED, RETIRED
+  supersedesVersion Int?
+
+  changedBy   String?  // User ID
+  changedAt   DateTime @default(now())
+  approvedBy  String?
+  approvedAt  DateTime?
+
+  reasonCode  String?
+  reasonText  String?
+
+  @@index([orgId])
+  @@index([materialId])
+  @@index([status])
+  @@unique([materialId, version])
+}
+
+// Inventory Lots with Quality Status
+model InventoryLot {
+  id          String   @id @default(cuid())
+  materialId  String
+  lotNumber   String
+  quantity    Float
+  unit        String
+
+  qualityStatus String @default("QUARANTINE") // RELEASED, QUARANTINE, REJECTED, SAMPLED, RETURNED
+  coaAttached Boolean @default(false)
+  coaFile     String?
+
+  receivedDate DateTime?
+  expirationDate DateTime?
+  storageLocation String?
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([materialId])
+  @@index([qualityStatus])
+  @@index([lotNumber])
+}
+
+// Equipment Calibration & Maintenance
+model EquipmentCalibration {
+  id          String   @id @default(cuid())
+  equipmentId String
+  calibrationType String // CALIBRATION, MAINTENANCE, CLEANING
+
+  dueDate     DateTime
+  completedDate DateTime?
+  completedBy String?
+
+  status      String   @default("DUE") // DUE, COMPLETED, OVERDUE
+  certificate String?  // Certificate/report file reference
+
+  nextDueDate DateTime?
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([equipmentId])
+  @@index([status])
+  @@index([dueDate])
 }

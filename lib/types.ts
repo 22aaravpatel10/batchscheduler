@@ -11,6 +11,10 @@ export type BatchStatus =
 export interface Equipment {
   id: string;
   name: string;
+  equipmentId: string | null;
+  size: string | null;
+  manufacturer: string | null;
+  materialOfConstruction: string | null;
   description: string | null;
   createdAt: Date | string;
   updatedAt: Date | string;
@@ -24,6 +28,38 @@ export interface Material {
   unit: string;
   currentQuantity: number;
   minimumQuantity: number;
+
+  // FDA 21 CFR Part 211 Requirements
+  casNumber: string | null;
+  lotNumber: string | null;
+  supplierName: string | null;
+  supplierLotNumber: string | null;
+  receivedDate: Date | string | null;
+  expirationDate: Date | string | null;
+  storageLocation: string | null;
+  storageConditions: string | null;
+
+  // OSHA HazCom & GHS Requirements
+  ghsClassification: string | null;
+  hazardCategory: string | null;
+  signalWord: string | null;
+  hazardStatements: string | null;
+  precautionaryStatements: string | null;
+  pictograms: string | null;
+  sdsFileName: string | null;
+  sdsLastUpdated: Date | string | null;
+
+  // Additional Safety Information
+  isHazardous: boolean;
+  requiresPPE: string | null;
+  firstAidMeasures: string | null;
+  disposalProcedure: string | null;
+
+  // Quality Control
+  qcStatus: string | null;
+  qcApprovedBy: string | null;
+  qcApprovedDate: Date | string | null;
+
   createdAt: Date | string;
   updatedAt: Date | string;
 }
@@ -39,6 +75,8 @@ export interface BatchMaterial {
 export interface Batch {
   id: string;
   name: string;
+  reactionStepId: string | null;
+  reactionStepName: string | null;
   equipmentId: string;
   equipment?: Equipment;
   startTime: Date | string;
@@ -58,30 +96,30 @@ export interface CalendarEvent {
   resource: Batch;
 }
 
-// Color mapping for batch statuses
+// Color mapping for batch statuses (teal-themed)
 export const statusColors: Record<BatchStatus, string> = {
-  PLANNED: 'bg-blue-500',
-  IN_PROGRESS: 'bg-yellow-500',
-  COMPLETED: 'bg-green-500',
-  DELAYED: 'bg-red-500',
-  ON_HOLD: 'bg-gray-500',
-  CANCELLED: 'bg-slate-400',
+  PLANNED: 'bg-teal-500',
+  IN_PROGRESS: 'bg-amber-500',
+  COMPLETED: 'bg-emerald-500',
+  DELAYED: 'bg-rose-500',
+  ON_HOLD: 'bg-slate-500',
+  CANCELLED: 'bg-gray-400',
 };
 
 export const statusBorderColors: Record<BatchStatus, string> = {
-  PLANNED: 'border-blue-600',
-  IN_PROGRESS: 'border-yellow-600',
-  COMPLETED: 'border-green-600',
-  DELAYED: 'border-red-600',
-  ON_HOLD: 'border-gray-600',
-  CANCELLED: 'border-slate-500',
+  PLANNED: 'border-teal-600',
+  IN_PROGRESS: 'border-amber-600',
+  COMPLETED: 'border-emerald-600',
+  DELAYED: 'border-rose-600',
+  ON_HOLD: 'border-slate-600',
+  CANCELLED: 'border-gray-500',
 };
 
 export const statusTextColors: Record<BatchStatus, string> = {
-  PLANNED: 'text-blue-700',
-  IN_PROGRESS: 'text-yellow-700',
-  COMPLETED: 'text-green-700',
-  DELAYED: 'text-red-700',
-  ON_HOLD: 'text-gray-700',
-  CANCELLED: 'text-slate-700',
+  PLANNED: 'text-teal-700',
+  IN_PROGRESS: 'text-amber-700',
+  COMPLETED: 'text-emerald-700',
+  DELAYED: 'text-rose-700',
+  ON_HOLD: 'text-slate-700',
+  CANCELLED: 'text-gray-700',
 };

@@ -1,25 +1,27 @@
-/* react-big-calendar custom styles */
+/* react-big-calendar custom styles - Teal Theme */
 .rbc-calendar {
-  font-family: inherit;
+  font-family: 'Raleway', sans-serif;
   height: 600px;
 }
 
 .rbc-header {
-  padding: 10px 3px;
+  padding: 12px 3px;
   font-weight: 600;
-  background: #f3f4f6;
-  border-bottom: 2px solid #e5e7eb;
+  background: #f0fdfa;
+  border-bottom: 2px solid #ccfbf1;
+  color: #0a0a0a;
 }
 
 .rbc-today {
-  background-color: #eff6ff;
+  background-color: #f0fdfa;
 }
 
 .rbc-event {
-  padding: 2px 5px;
-  border-radius: 4px;
+  padding: 3px 6px;
+  border-radius: 5px;
   border: none;
   font-size: 0.875rem;
+  font-weight: 500;
 }
 
 .rbc-event-label {
@@ -27,50 +29,51 @@
 }
 
 .rbc-toolbar button {
-  color: #374151;
-  border: 1px solid #d1d5db;
-  padding: 6px 12px;
+  color: #0a0a0a;
+  border: 1px solid #ccfbf1;
+  padding: 8px 14px;
   border-radius: 6px;
   background: white;
   font-weight: 500;
+  font-family: 'Raleway', sans-serif;
 }
 
 .rbc-toolbar button:hover {
-  background: #f9fafb;
-  border-color: #9ca3af;
+  background: #f0fdfa;
+  border-color: #5eead4;
 }
 
 .rbc-toolbar button.rbc-active {
-  background: #3b82f6;
+  background: #14b8a6;
   color: white;
-  border-color: #3b82f6;
+  border-color: #14b8a6;
 }
 
 .rbc-toolbar button.rbc-active:hover {
-  background: #2563eb;
-  border-color: #2563eb;
+  background: #0d9488;
+  border-color: #0d9488;
 }
 
 .rbc-event.batch-PLANNED {
-  background-color: #3b82f6;
+  background-color: #14b8a6;
 }
 
 .rbc-event.batch-IN_PROGRESS {
-  background-color: #eab308;
+  background-color: #f59e0b;
 }
 
 .rbc-event.batch-COMPLETED {
-  background-color: #22c55e;
+  background-color: #10b981;
 }
 
 .rbc-event.batch-DELAYED {
-  background-color: #ef4444;
+  background-color: #f43f5e;
 }
 
 .rbc-event.batch-ON_HOLD {
-  background-color: #6b7280;
+  background-color: #64748b;
 }
 
 .rbc-event.batch-CANCELLED {
-  background-color: #94a3b8;
+  background-color: #9ca3af;
 }
