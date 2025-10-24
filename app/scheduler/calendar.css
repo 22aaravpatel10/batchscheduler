@@ -1,0 +1,79 @@
+/* react-big-calendar custom styles - Teal Theme */
+.rbc-calendar {
+  font-family: 'Raleway', sans-serif;
+  height: 600px;
+}
+
+.rbc-header {
+  padding: 12px 3px;
+  font-weight: 600;
+  background: #f0fdfa;
+  border-bottom: 2px solid #ccfbf1;
+  color: #0a0a0a;
+}
+
+.rbc-today {
+  background-color: #f0fdfa;
+}
+
+.rbc-event {
+  padding: 3px 6px;
+  border-radius: 5px;
+  border: none;
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+.rbc-event-label {
+  font-size: 0.75rem;
+}
+
+.rbc-toolbar button {
+  color: #0a0a0a;
+  border: 1px solid #ccfbf1;
+  padding: 8px 14px;
+  border-radius: 6px;
+  background: white;
+  font-weight: 500;
+  font-family: 'Raleway', sans-serif;
+}
+
+.rbc-toolbar button:hover {
+  background: #f0fdfa;
+  border-color: #5eead4;
+}
+
+.rbc-toolbar button.rbc-active {
+  background: #14b8a6;
+  color: white;
+  border-color: #14b8a6;
+}
+
+.rbc-toolbar button.rbc-active:hover {
+  background: #0d9488;
+  border-color: #0d9488;
+}
+
+.rbc-event.batch-PLANNED {
+  background-color: #14b8a6;
+}
+
+.rbc-event.batch-IN_PROGRESS {
+  background-color: #f59e0b;
+}
+
+.rbc-event.batch-COMPLETED {
+  background-color: #10b981;
+}
+
+.rbc-event.batch-DELAYED {
+  background-color: #f43f5e;
+}
+
+.rbc-event.batch-ON_HOLD {
+  background-color: #64748b;
+}
+
+.rbc-event.batch-CANCELLED {
+  background-color: #9ca3af;
+}
